@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Planetary API Observatory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+      :root {
+        --bg-dark: #031126;
+        --bg-deep: #07193f;
+        --line: rgba(103, 171, 255, 0.3);
+        --panel-bg: rgba(9, 26, 58, 0.62);
+        --text-main: #ecf5ff;
+        --text-soft: #a8c5e6;
+        --accent: #3ec4ff;
+        --accent-strong: #26a7ff;
+        --radius-card: 16px;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--text-main);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:
+          radial-gradient(circle at 12% 8%, rgba(126, 198, 255, 0.3), transparent 40%),
+          radial-gradient(circle at 90% 24%, rgba(39, 122, 255, 0.22), transparent 35%),
+          radial-gradient(circle at 72% 62%, rgba(10, 74, 168, 0.28), transparent 55%),
+          linear-gradient(180deg, #051327 0%, #061836 42%, #081d45 100%);
+        background-attachment: fixed;
+      }
+
+      .app-shell {
+        max-width: 1200px;
+      }
+
+      .hero {
+        border-radius: 28px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(92deg, rgba(6, 20, 45, 0.86) 0%, rgba(7, 27, 61, 0.56) 48%, rgba(8, 40, 86, 0.25) 100%),
+          radial-gradient(circle at 75% 50%, rgba(53, 178, 255, 0.22), transparent 48%);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          radial-gradient(circle at 12% 22%, rgba(255, 255, 255, 0.7) 1px, transparent 2px),
+          radial-gradient(circle at 30% 66%, rgba(151, 214, 255, 0.6) 1px, transparent 2px),
+          radial-gradient(circle at 48% 24%, rgba(255, 255, 255, 0.7) 1px, transparent 2px),
+          radial-gradient(circle at 60% 76%, rgba(177, 220, 255, 0.55) 1px, transparent 2px),
+          radial-gradient(circle at 82% 30%, rgba(255, 255, 255, 0.65) 1px, transparent 2px),
+          radial-gradient(circle at 90% 68%, rgba(141, 211, 255, 0.6) 1px, transparent 2px);
+        background-size: 280px 220px;
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 74% 46%, rgba(93, 213, 255, 0.24), transparent 36%);
+        pointer-events: none;
+      }
+
+      .hero-title {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.15;
+        max-width: 13ch;
+        margin-bottom: 1rem;
+      }
+
+      .hero-copy {
+        color: var(--text-soft);
+        max-width: 62ch;
+      }
+
+      .ring-planet {
+        width: min(38vw, 420px);
+        aspect-ratio: 1;
+        border-radius: 50%;
+        position: absolute;
+        right: -80px;
+        top: 55px;
+        background:
+          radial-gradient(circle at 38% 32%, #c9f2ff 0%, #73c8f4 26%, #3175be 58%, #143f7b 100%);
+        border: 1px solid rgba(170, 222, 255, 0.45);
+        box-shadow: 0 0 40px rgba(53, 145, 252, 0.3), inset -24px -18px 40px rgba(5, 14, 36, 0.5);
+      }
+
+      .ring-planet .planet-shade {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 26% 30%, rgba(231, 251, 255, 0.35), transparent 45%),
+          linear-gradient(110deg, transparent 20%, rgba(12, 45, 97, 0.45) 76%);
+      }
+
+      .ring-planet::before,
+      .ring-planet::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 52%;
+        transform: translate(-50%, -50%) rotate(-16deg);
+        border-radius: 50%;
+      }
+
+      .ring-planet::before {
+        width: 148%;
+        height: 40%;
+        border: 2px solid rgba(97, 218, 255, 0.65);
+        box-shadow: 0 0 26px rgba(56, 186, 255, 0.5);
+      }
+
+      .ring-planet::after {
+        width: 128%;
+        height: 28%;
+        border: 1px solid rgba(171, 236, 255, 0.4);
+      }
+
+      .form-label {
+        color: var(--text-soft);
+        font-size: 0.9rem;
+      }
+
+      .form-control,
+      .form-select {
+        background: rgba(4, 21, 46, 0.72);
+        border: 1px solid rgba(97, 165, 236, 0.34);
+        color: var(--text-main);
+        border-radius: 12px;
+      }
+
+      .form-control::placeholder {
+        color: rgba(200, 222, 248, 0.6);
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background: rgba(4, 21, 46, 0.92);
+        border-color: rgba(89, 200, 255, 0.9);
+        box-shadow: 0 0 0 0.24rem rgba(56, 192, 255, 0.2);
+        color: var(--text-main);
+      }
+
+      .search-btn {
+        border: 1px solid rgba(98, 201, 255, 0.62);
+        color: #ffffff;
+        background: linear-gradient(120deg, #1a6dca, #1eb0ff);
+        border-radius: 12px;
+      }
+
+      .search-btn:hover {
+        background: linear-gradient(120deg, #1f7ae2, #3ac1ff);
+      }
+
+      .planet-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        overflow: hidden;
+        background:
+          linear-gradient(160deg, rgba(8, 32, 69, 0.76), rgba(5, 22, 50, 0.76)),
+          radial-gradient(circle at 30% 18%, rgba(83, 205, 255, 0.2), transparent 48%);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        transition: transform 0.32s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        cursor: pointer;
+      }
+
+      .planet-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(96, 194, 255, 0.7);
+      }
+
+      .planet-card.is-activating {
+        animation: cardClickIn 620ms cubic-bezier(0.17, 0.79, 0.25, 1.22);
+      }
+
+      @keyframes cardClickIn {
+        0% { transform: scale(1) rotate(0deg); }
+        45% { transform: scale(1.08) rotate(-3deg); }
+        100% { transform: scale(1.01) rotate(0deg); }
+      }
+
+      .planet-art {
+        height: 160px;
+        width: 100%;
+        border-bottom: 1px solid rgba(98, 165, 228, 0.26);
+        position: relative;
+      }
+
+      .planet-art::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.36), transparent 42%),
+          linear-gradient(120deg, transparent 42%, rgba(7, 19, 41, 0.32) 82%);
+      }
+
+      .planet-name {
+        color: #ffffff;
+      }
+
+      .tag {
+        border: 1px solid rgba(101, 178, 255, 0.5);
+        color: #cce9ff;
+        background: rgba(16, 70, 121, 0.45);
+        border-radius: 999px;
+      }
+
+      .info-text {
+        color: #d3e4f8;
+        overflow-wrap: anywhere;
+      }
+
+      .status-box {
+        border: 1px solid rgba(95, 167, 238, 0.5);
+        color: var(--text-main);
+        border-radius: var(--radius-card);
+        background: rgba(5, 23, 54, 0.7);
+      }
+
+      .details-overlay {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(2, 9, 22, 0.65);
+        backdrop-filter: blur(6px);
+        padding: 1rem;
+        z-index: 50;
+      }
+
+      .details-overlay.d-none {
+        display: none;
+      }
+
+      .details-panel {
+        width: min(680px, 100%);
+        border: 1px solid rgba(106, 188, 255, 0.48);
+        border-radius: 22px;
+        background:
+          linear-gradient(150deg, rgba(6, 21, 46, 0.95), rgba(5, 19, 44, 0.94)),
+          radial-gradient(circle at 100% 0%, rgba(53, 167, 255, 0.24), transparent 48%);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+        animation: detailsAppear 320ms ease-out;
+      }
+
+      @keyframes detailsAppear {
+        0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .details-header {
+        border-bottom: 1px solid rgba(115, 193, 255, 0.24);
+      }
+
+      .close-btn {
+        border: 1px solid rgba(101, 177, 255, 0.55);
+        color: #d5ecff;
+        background: rgba(17, 67, 118, 0.55);
+        border-radius: 10px;
+      }
+
+      .close-btn:hover {
+        background: rgba(31, 96, 162, 0.66);
+      }
+
+      @media (max-width: 992px) {
+        .ring-planet {
+          opacity: 0.32;
+          right: -130px;
+          top: 120px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-title {
+          max-width: none;
+        }
+
+        .ring-planet {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container app-shell py-4 py-md-5">
+      <section class="hero p-4 p-md-5 mb-4">
+        <div class="position-relative" style="z-index:2;">
+          <p class="text-uppercase small mb-2" style="letter-spacing: 0.18em; color: var(--text-soft);">
+            Planetary Intelligence Network
+          </p>
+          <h1 class="hero-title fw-semibold">Discover Every Planet in the Universe</h1>
+          <p class="hero-copy mb-4">
+            Click any planet card to trigger a cinematic zoom-and-rotate animation and reveal a complete data profile.
+          </p>
+
+          <form id="searchForm" class="row g-3">
+            <div class="col-md-6">
+              <label for="nameQuery" class="form-label">Planet or body name</label>
+              <input id="nameQuery" type="text" class="form-control" placeholder="Earth, Mars, Europa, Titan..." />
+            </div>
+            <div class="col-md-4">
+              <label for="bodyFilter" class="form-label">Body category</label>
+              <select id="bodyFilter" class="form-select">
+                <option value="">All categories</option>
+                <option value="Planet">Planet</option>
+                <option value="Dwarf Planet">Dwarf Planet</option>
+                <option value="Moon">Moon</option>
+                <option value="Asteroid">Asteroid</option>
+                <option value="Comet">Comet</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button class="btn search-btn w-100" type="submit">Search</button>
+            </div>
+          </form>
+        </div>
+        <div class="ring-planet">
+          <div class="planet-shade"></div>
+        </div>
+      </section>
+
+      <section>
+        <div id="status" class="status-box rounded-4 p-3 mb-3 d-none" role="status"></div>
+        <div id="results" class="row g-4"></div>
+      </section>
+    </main>
+
+    <div id="detailsOverlay" class="details-overlay d-none" role="dialog" aria-modal="true" aria-label="Planet details">
+      <section class="details-panel">
+        <header class="details-header d-flex justify-content-between align-items-center p-3 p-md-4">
+          <div>
+            <h2 id="detailName" class="h4 mb-1">Planet name</h2>
+            <p id="detailType" class="mb-0" style="color: var(--text-soft);">Type</p>
+          </div>
+          <button id="closeDetailsBtn" class="btn close-btn" type="button">Close</button>
+        </header>
+        <div id="detailBody" class="p-3 p-md-4"></div>
+      </section>
+    </div>
+
+    <script>
+      const API_URL = "https://api.le-systeme-solaire.net/rest/bodies";
+      const MAX_RESULTS = 120;
+      const API_TIMEOUT_MS = 8000;
+      const FALLBACK_BODIES = [
+        { englishName: "Mercury", bodyType: "Planet", gravity: 3.7, meanRadius: 2439.7, mass: { massValue: 3.3011, massExponent: 23 }, density: 5.43, escape: 4250, avgTemp: 440, sideralRotation: 1407.6, sideralOrbit: 87.97, moons: [], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
+        { englishName: "Venus", bodyType: "Planet", gravity: 8.87, meanRadius: 6051.8, mass: { massValue: 4.8675, massExponent: 24 }, density: 5.24, escape: 10360, avgTemp: 737, sideralRotation: -5832.5, sideralOrbit: 224.7, moons: [], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
+        { englishName: "Earth", bodyType: "Planet", gravity: 9.8, meanRadius: 6371, mass: { massValue: 5.97237, massExponent: 24 }, density: 5.51, escape: 11186, avgTemp: 288, sideralRotation: 23.93, sideralOrbit: 365.25, moons: [{ moon: "Moon" }], discoveredBy: "N/A", discoveryDate: "N/A" },
+        { englishName: "Mars", bodyType: "Planet", gravity: 3.71, meanRadius: 3389.5, mass: { massValue: 6.4171, massExponent: 23 }, density: 3.93, escape: 5030, avgTemp: 210, sideralRotation: 24.62, sideralOrbit: 687, moons: [{ moon: "Phobos" }, { moon: "Deimos" }], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
+        { englishName: "Jupiter", bodyType: "Planet", gravity: 24.79, meanRadius: 69911, mass: { massValue: 1.8982, massExponent: 27 }, density: 1.33, escape: 59500, avgTemp: 165, sideralRotation: 9.93, sideralOrbit: 4331, moons: [{ moon: "Europa" }, { moon: "Io" }, { moon: "Ganymede" }, { moon: "Callisto" }], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
+        { englishName: "Saturn", bodyType: "Planet", gravity: 10.44, meanRadius: 58232, mass: { massValue: 5.6834, massExponent: 26 }, density: 0.69, escape: 35500, avgTemp: 134, sideralRotation: 10.7, sideralOrbit: 10747, moons: [{ moon: "Titan" }, { moon: "Enceladus" }], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
+        { englishName: "Uranus", bodyType: "Planet", gravity: 8.69, meanRadius: 25362, mass: { massValue: 8.681, massExponent: 25 }, density: 1.27, escape: 21300, avgTemp: 76, sideralRotation: -17.2, sideralOrbit: 30589, moons: [{ moon: "Miranda" }, { moon: "Titania" }], discoveredBy: "William Herschel", discoveryDate: "13/03/1781" },
+        { englishName: "Neptune", bodyType: "Planet", gravity: 11.15, meanRadius: 24622, mass: { massValue: 1.02413, massExponent: 26 }, density: 1.64, escape: 23500, avgTemp: 72, sideralRotation: 16.11, sideralOrbit: 59800, moons: [{ moon: "Triton" }], discoveredBy: "Urbain Le Verrier, John Couch Adams, Johann Galle", discoveryDate: "23/09/1846" },
+        { englishName: "Pluto", bodyType: "Dwarf Planet", gravity: 0.62, meanRadius: 1188.3, mass: { massValue: 1.303, massExponent: 22 }, density: 1.86, escape: 1210, avgTemp: 44, sideralRotation: -153.3, sideralOrbit: 90560, moons: [{ moon: "Charon" }], discoveredBy: "Clyde Tombaugh", discoveryDate: "18/02/1930" }
+      ];
+
+      const searchForm = document.getElementById("searchForm");
+      const nameQueryInput = document.getElementById("nameQuery");
+      const bodyFilterInput = document.getElementById("bodyFilter");
+      const resultsEl = document.getElementById("results");
+      const statusEl = document.getElementById("status");
+      const detailsOverlay = document.getElementById("detailsOverlay");
+      const detailNameEl = document.getElementById("detailName");
+      const detailTypeEl = document.getElementById("detailType");
+      const detailBodyEl = document.getElementById("detailBody");
+      const closeDetailsBtn = document.getElementById("closeDetailsBtn");
+
+      function setStatus(message) {
+        statusEl.classList.remove("d-none");
+        statusEl.textContent = message;
+      }
+
+      function clearStatus() {
+        statusEl.classList.add("d-none");
+        statusEl.textContent = "";
+      }
+
+      function formatNumber(value, digits = 2) {
+        if (typeof value !== "number" || Number.isNaN(value)) return "Unknown";
+        return value.toLocaleString(undefined, { maximumFractionDigits: digits });
+      }
+
+      function formatMass(mass) {
+        if (!mass || typeof mass.massValue !== "number" || typeof mass.massExponent !== "number") {
+          return "Unknown";
+        }
+        return `${mass.massValue}e${mass.massExponent} kg`;
+      }
+
+      function renderDetailLine(label, value) {
+        return `
+          <p class="mb-2 info-text">
+            <strong>${label}:</strong> ${value}
+          </p>
+        `;
+      }
+
+      function openDetails(body) {
+        detailNameEl.textContent = body.englishName || body.name || "Unknown body";
+        detailTypeEl.textContent = body.bodyType || "Unknown type";
+
+        const values = [
+          ["Gravity", typeof body.gravity === "number" ? `${formatNumber(body.gravity)} m/s²` : "Unknown"],
+          ["Mean Radius", typeof body.meanRadius === "number" ? `${formatNumber(body.meanRadius)} km` : "Unknown"],
+          ["Equatorial Radius", typeof body.equaRadius === "number" ? `${formatNumber(body.equaRadius)} km` : "Unknown"],
+          ["Polar Radius", typeof body.polarRadius === "number" ? `${formatNumber(body.polarRadius)} km` : "Unknown"],
+          ["Mass", formatMass(body.mass)],
+          ["Density", typeof body.density === "number" ? `${formatNumber(body.density)} g/cm³` : "Unknown"],
+          ["Escape Velocity", typeof body.escape === "number" ? `${formatNumber(body.escape)} m/s` : "Unknown"],
+          ["Mean Temperature", typeof body.avgTemp === "number" ? `${formatNumber(body.avgTemp)} K` : "Unknown"],
+          ["Rotation Period", typeof body.sideralRotation === "number" ? `${formatNumber(body.sideralRotation)} h` : "Unknown"],
+          ["Orbital Period", typeof body.sideralOrbit === "number" ? `${formatNumber(body.sideralOrbit)} d` : "Unknown"],
+          ["Moons", Array.isArray(body.moons) ? body.moons.length : 0],
+          ["Around Planet", body.aroundPlanet && body.aroundPlanet.planet ? body.aroundPlanet.planet : "None"],
+          ["Discovered By", body.discoveredBy || "Not listed"],
+          ["Discovery Date", body.discoveryDate || "Unknown"]
+        ];
+
+        detailBodyEl.innerHTML = values.map(([label, value]) => renderDetailLine(label, value)).join("");
+        detailsOverlay.classList.remove("d-none");
+      }
+
+      function closeDetails() {
+        detailsOverlay.classList.add("d-none");
+      }
+
+      function makeGradient(seed = "") {
+        const key = (seed || "planet").toLowerCase();
+        const variants = [
+          "radial-gradient(circle at 30% 30%, #d3f4ff, #62c1f7 48%, #255cbb)",
+          "radial-gradient(circle at 30% 30%, #f8e2ca, #d7ac88 52%, #634b8e)",
+          "radial-gradient(circle at 30% 30%, #e5f8ff, #95d6ff 48%, #2f75c2)",
+          "radial-gradient(circle at 30% 30%, #d3ebff, #89b5ef 50%, #35549d)"
+        ];
+        const index = key.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0) % variants.length;
+        return variants[index];
+      }
+
+      function filterBodies(allBodies, query, type) {
+        return allBodies
+          .filter((body) => {
+            const bodyName = (body.englishName || body.name || "").toLowerCase();
+            const bodyType = (body.bodyType || "").toLowerCase();
+            const byName = !query || bodyName.includes(query);
+            const byType = !type || bodyType === type;
+            return byName && byType;
+          })
+          .slice(0, MAX_RESULTS);
+      }
+
+      function renderBodies(bodies) {
+        if (!bodies.length) {
+          resultsEl.innerHTML = `
+            <div class="col-12">
+              <article class="planet-card p-4">
+                <p class="mb-0">No planetary bodies matched your filters.</p>
+              </article>
+            </div>
+          `;
+          return;
+        }
+
+        resultsEl.innerHTML = bodies
+          .map((body, index) => {
+            const englishName = body.englishName || body.name || "Unknown body";
+            const bodyType = body.bodyType || "Unknown type";
+            const gravity = typeof body.gravity === "number" ? `${formatNumber(body.gravity)} m/s²` : "Unknown";
+            const meanRadius = typeof body.meanRadius === "number" ? `${formatNumber(body.meanRadius)} km` : "Unknown";
+            const moons = Array.isArray(body.moons) ? body.moons.length : 0;
+
+            return `
+              <div class="col-12 col-md-6 col-lg-4">
+                <article class="planet-card h-100" data-index="${index}">
+                  <div class="planet-art" style="background:${makeGradient(englishName)};"></div>
+                  <div class="p-3">
+                    <h3 class="h5 planet-name mb-2">${englishName}</h3>
+                    <p class="mb-2"><span class="badge tag">${bodyType}</span></p>
+                    <p class="small mb-2 info-text"><strong>Gravity:</strong> ${gravity}</p>
+                    <p class="small mb-2 info-text"><strong>Mean Radius:</strong> ${meanRadius}</p>
+                    <p class="small mb-0 info-text"><strong>Moons:</strong> ${moons}</p>
+                  </div>
+                </article>
+              </div>
+            `;
+          })
+          .join("");
+
+        document.querySelectorAll(".planet-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            const cardIndex = Number(card.dataset.index);
+            const selectedBody = bodies[cardIndex];
+            if (!selectedBody) return;
+
+            card.classList.remove("is-activating");
+            void card.offsetWidth;
+            card.classList.add("is-activating");
+
+            window.setTimeout(() => {
+              openDetails(selectedBody);
+            }, 260);
+          });
+        });
+      }
+
+      async function fetchBodies() {
+        const query = nameQueryInput.value.trim().toLowerCase();
+        const type = bodyFilterInput.value.trim().toLowerCase();
+
+        setStatus("Scanning planetary records...");
+        resultsEl.innerHTML = "";
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+          const response = await fetch(API_URL, { signal: controller.signal });
+          window.clearTimeout(timeoutId);
+          if (!response.ok) {
+            throw new Error(`API returned status ${response.status}`);
+          }
+
+          const payload = await response.json();
+          const allBodies = Array.isArray(payload.bodies) ? payload.bodies : [];
+          const filteredBodies = filterBodies(allBodies, query, type);
+          clearStatus();
+          renderBodies(filteredBodies);
+        } catch (error) {
+          const fallbackFiltered = filterBodies(FALLBACK_BODIES, query, type);
+          setStatus("Live API unavailable. Showing offline planetary dataset.");
+          renderBodies(fallbackFiltered);
+          console.error("Live API failed, using fallback:", error);
+        }
+      }
+
+      searchForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        fetchBodies();
+      });
+
+      closeDetailsBtn.addEventListener("click", closeDetails);
+      detailsOverlay.addEventListener("click", (event) => {
+        if (event.target === detailsOverlay) closeDetails();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeDetails();
+      });
+
+      fetchBodies();
+    </script>
+  </body>
+</html>
