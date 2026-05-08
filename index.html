@@ -21,8 +21,8 @@
       :root[data-theme="light"] {
         --bg-dark: #f7fbff;
         --bg-deep: #eaf3ff;
-        --line: rgba(38, 130, 255, 0.22);
-        --panel-bg: rgba(255, 255, 255, 0.62);
+        --line: rgba(38, 130, 255, 0.26);
+        --panel-bg: rgba(255, 255, 255, 0.72);
         --text-main: #071b33;
         --text-soft: #244a73;
         --accent: #0077ff;
@@ -44,9 +44,10 @@
 
       :root[data-theme="light"] body {
         background:
-          radial-gradient(circle at 12% 8%, rgba(0, 140, 255, 0.18), transparent 40%),
-          radial-gradient(circle at 90% 24%, rgba(0, 87, 199, 0.12), transparent 35%),
-          radial-gradient(circle at 72% 62%, rgba(0, 110, 255, 0.14), transparent 55%),
+          radial-gradient(circle at 15% 12%, rgba(255, 239, 188, 0.5), transparent 36%),
+          radial-gradient(circle at 78% 18%, rgba(162, 221, 255, 0.42), transparent 33%),
+          radial-gradient(circle at 68% 70%, rgba(116, 188, 255, 0.28), transparent 54%),
+          radial-gradient(circle at 30% 72%, rgba(191, 163, 255, 0.18), transparent 48%),
           linear-gradient(180deg, #f7fbff 0%, #ecf4ff 42%, #e6f0ff 100%);
         background-attachment: scroll;
       }
@@ -102,11 +103,21 @@
         line-height: 1.15;
         max-width: 13ch;
         margin-bottom: 1rem;
+        color: #ffffff;
+        text-shadow: 0 2px 12px rgba(6, 21, 46, 0.5);
       }
 
       .hero-copy {
-        color: var(--text-soft);
+        color: #d9ecff;
         max-width: 62ch;
+        text-shadow: 0 1px 8px rgba(6, 21, 46, 0.35);
+      }
+
+      .hero-kicker {
+        letter-spacing: 0.18em;
+        color: #cfe7ff;
+        font-weight: 700;
+        text-shadow: 0 1px 8px rgba(6, 21, 46, 0.35);
       }
 
       .ring-planet {
@@ -157,6 +168,8 @@
       .form-label {
         color: var(--text-soft);
         font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
       }
 
       .form-control,
@@ -165,6 +178,7 @@
         border: 1px solid rgba(97, 165, 236, 0.34);
         color: var(--text-main);
         border-radius: 12px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
       }
 
       .form-control::placeholder {
@@ -955,19 +969,35 @@
 
       /* ===== Theme overrides (light mode) ===== */
       :root[data-theme="light"] .hero::after {
-        opacity: 0.22;
+        opacity: 0.34;
+        background:
+          radial-gradient(circle at 74% 46%, rgba(94, 188, 255, 0.28), transparent 36%),
+          radial-gradient(circle at 32% 18%, rgba(255, 223, 139, 0.2), transparent 28%);
       }
 
       :root[data-theme="light"] .hero::before {
-        opacity: 0.18;
+        opacity: 0.32;
       }
 
       :root[data-theme="light"] .hero-title {
-        color: var(--text-main);
+        color: #05213f;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65), 0 10px 24px rgba(113, 176, 243, 0.2);
       }
 
       :root[data-theme="light"] .hero-copy {
-        color: var(--text-soft);
+        color: #1c446f;
+        line-height: 1.7;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      }
+
+      :root[data-theme="light"] .hero-kicker {
+        color: #0f5b9f;
+        letter-spacing: 0.2em;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+      }
+
+      :root[data-theme="light"] .form-label {
+        color: #2a5d8f;
       }
 
       :root[data-theme="light"] .status-box {
@@ -978,14 +1008,21 @@
 
       :root[data-theme="light"] .planet-card {
         background:
-          linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(235, 247, 255, 0.84)),
-          radial-gradient(circle at 30% 16%, rgba(0, 140, 255, 0.18), transparent 50%);
-        box-shadow: 0 14px 34px rgba(5, 20, 50, 0.12);
+          linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(236, 248, 255, 0.88)),
+          radial-gradient(circle at 24% 14%, rgba(255, 218, 122, 0.22), transparent 46%),
+          radial-gradient(circle at 82% 70%, rgba(107, 183, 255, 0.16), transparent 52%);
+        box-shadow: 0 14px 34px rgba(5, 20, 50, 0.14);
       }
 
       :root[data-theme="light"] .planet-card:hover {
-        box-shadow: 0 24px 48px rgba(5, 20, 50, 0.16);
+        box-shadow: 0 24px 48px rgba(5, 20, 50, 0.18), 0 0 0 1px rgba(0, 120, 255, 0.2), 0 0 28px rgba(90, 177, 255, 0.2);
         border-color: rgba(0, 120, 255, 0.35);
+      }
+
+      :root[data-theme="light"] .planet-art::before {
+        background:
+          radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.52), transparent 48%),
+          radial-gradient(circle at 52% 82%, rgba(15, 52, 108, 0.12), transparent 48%);
       }
 
       :root[data-theme="light"] .planet-name,
@@ -1004,6 +1041,22 @@
         color: rgba(0, 55, 110, 0.5);
       }
 
+      :root[data-theme="light"] .form-control,
+      :root[data-theme="light"] .form-select {
+        background: rgba(255, 255, 255, 0.86);
+        border-color: rgba(71, 157, 242, 0.42);
+        color: #0d2e53;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 8px 20px rgba(71, 133, 211, 0.1);
+      }
+
+      :root[data-theme="light"] .form-control:focus,
+      :root[data-theme="light"] .form-select:focus {
+        background: #ffffff;
+        border-color: rgba(38, 126, 214, 0.68);
+        box-shadow: 0 0 0 0.24rem rgba(73, 157, 238, 0.2), 0 10px 22px rgba(71, 133, 211, 0.16);
+        color: #0d2e53;
+      }
+
       :root[data-theme="light"] .details-overlay {
         background: rgba(245, 251, 255, 0.72);
       }
@@ -1014,6 +1067,45 @@
           linear-gradient(150deg, rgba(255, 255, 255, 0.9), rgba(235, 247, 255, 0.82)),
           radial-gradient(circle at 100% 0%, rgba(0, 120, 255, 0.18), transparent 48%);
         box-shadow: 0 24px 60px rgba(5, 20, 50, 0.22);
+      }
+
+      :root[data-theme="light"] .detail-space-base {
+        background:
+          radial-gradient(circle at 22% 20%, rgba(255, 224, 148, 0.26), transparent 32%),
+          radial-gradient(circle at 80% 28%, rgba(113, 193, 255, 0.24), transparent 35%),
+          radial-gradient(circle at 58% 82%, rgba(152, 118, 255, 0.16), transparent 38%),
+          linear-gradient(180deg, rgba(231, 243, 255, 0.9), rgba(218, 236, 255, 0.9));
+      }
+
+      :root[data-theme="light"] .detail-nebula {
+        background:
+          radial-gradient(circle at 65% 40%, rgba(88, 174, 255, 0.24), transparent 36%),
+          radial-gradient(circle at 34% 72%, rgba(126, 122, 255, 0.2), transparent 30%),
+          radial-gradient(circle at 80% 70%, rgba(255, 173, 221, 0.14), transparent 33%);
+        opacity: 0.86;
+      }
+
+      :root[data-theme="light"] .detail-stars {
+        opacity: 0.52;
+      }
+
+      :root[data-theme="light"] .detail-content-glass {
+        border-color: rgba(60, 147, 236, 0.32);
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.74), rgba(232, 246, 255, 0.62));
+        box-shadow: 0 10px 30px rgba(30, 68, 126, 0.18);
+      }
+
+      :root[data-theme="light"] .detail-stat {
+        border-color: rgba(69, 149, 232, 0.28);
+        background: rgba(240, 249, 255, 0.74);
+      }
+
+      :root[data-theme="light"] .detail-stat .k {
+        color: #3e6b98;
+      }
+
+      :root[data-theme="light"] .detail-stat .v {
+        color: #0f2848;
       }
 
       .theme-toggle-btn {
@@ -1042,7 +1134,7 @@
     <main class="container app-shell py-4 py-md-5">
       <section class="hero p-4 p-md-5 mb-4">
         <div class="position-relative" style="z-index:2;">
-          <p class="text-uppercase small mb-2" style="letter-spacing: 0.18em; color: var(--text-soft);">
+          <p class="text-uppercase small mb-2 hero-kicker">
             Planetary Intelligence Network
           </p>
           <h1 class="hero-title fw-semibold">Discover Every Planet in the Universe</h1>
