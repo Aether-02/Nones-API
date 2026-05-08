@@ -18,6 +18,17 @@
         --radius-card: 16px;
       }
 
+      :root[data-theme="light"] {
+        --bg-dark: #f7fbff;
+        --bg-deep: #eaf3ff;
+        --line: rgba(38, 130, 255, 0.22);
+        --panel-bg: rgba(255, 255, 255, 0.62);
+        --text-main: #071b33;
+        --text-soft: #244a73;
+        --accent: #0077ff;
+        --accent-strong: #0057c7;
+      }
+
       body {
         min-height: 100vh;
         margin: 0;
@@ -29,6 +40,15 @@
           radial-gradient(circle at 72% 62%, rgba(10, 74, 168, 0.28), transparent 55%),
           linear-gradient(180deg, #051327 0%, #061836 42%, #081d45 100%);
         background-attachment: fixed;
+      }
+
+      :root[data-theme="light"] body {
+        background:
+          radial-gradient(circle at 12% 8%, rgba(0, 140, 255, 0.18), transparent 40%),
+          radial-gradient(circle at 90% 24%, rgba(0, 87, 199, 0.12), transparent 35%),
+          radial-gradient(circle at 72% 62%, rgba(0, 110, 255, 0.14), transparent 55%),
+          linear-gradient(180deg, #f7fbff 0%, #ecf4ff 42%, #e6f0ff 100%);
+        background-attachment: scroll;
       }
 
       .app-shell {
@@ -932,9 +952,93 @@
           margin-top: 122px;
         }
       }
+
+      /* ===== Theme overrides (light mode) ===== */
+      :root[data-theme="light"] .hero::after {
+        opacity: 0.22;
+      }
+
+      :root[data-theme="light"] .hero::before {
+        opacity: 0.18;
+      }
+
+      :root[data-theme="light"] .hero-title {
+        color: var(--text-main);
+      }
+
+      :root[data-theme="light"] .hero-copy {
+        color: var(--text-soft);
+      }
+
+      :root[data-theme="light"] .status-box {
+        background: rgba(255, 255, 255, 0.68);
+        border-color: rgba(0, 120, 255, 0.22);
+        color: var(--text-main);
+      }
+
+      :root[data-theme="light"] .planet-card {
+        background:
+          linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(235, 247, 255, 0.84)),
+          radial-gradient(circle at 30% 16%, rgba(0, 140, 255, 0.18), transparent 50%);
+        box-shadow: 0 14px 34px rgba(5, 20, 50, 0.12);
+      }
+
+      :root[data-theme="light"] .planet-card:hover {
+        box-shadow: 0 24px 48px rgba(5, 20, 50, 0.16);
+        border-color: rgba(0, 120, 255, 0.35);
+      }
+
+      :root[data-theme="light"] .planet-name,
+      :root[data-theme="light"] .info-text,
+      :root[data-theme="light"] .planet-desc {
+        color: var(--text-main);
+      }
+
+      :root[data-theme="light"] .tag {
+        background: rgba(0, 140, 255, 0.12);
+        border-color: rgba(0, 120, 255, 0.3);
+        color: #0a3a66;
+      }
+
+      :root[data-theme="light"] .form-control::placeholder {
+        color: rgba(0, 55, 110, 0.5);
+      }
+
+      :root[data-theme="light"] .details-overlay {
+        background: rgba(245, 251, 255, 0.72);
+      }
+
+      :root[data-theme="light"] .details-panel {
+        border-color: rgba(0, 120, 255, 0.25);
+        background:
+          linear-gradient(150deg, rgba(255, 255, 255, 0.9), rgba(235, 247, 255, 0.82)),
+          radial-gradient(circle at 100% 0%, rgba(0, 120, 255, 0.18), transparent 48%);
+        box-shadow: 0 24px 60px rgba(5, 20, 50, 0.22);
+      }
+
+      .theme-toggle-btn {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 80;
+        border-radius: 999px;
+        border: 1px solid rgba(97, 165, 236, 0.34);
+        background: rgba(5, 23, 54, 0.55);
+        color: var(--text-main);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+        padding: 0.45rem 0.75rem;
+        user-select: none;
+      }
+
+      :root[data-theme="light"] .theme-toggle-btn {
+        background: rgba(255, 255, 255, 0.72);
+        border-color: rgba(0, 120, 255, 0.22);
+      }
     </style>
   </head>
   <body>
+    <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Toggle theme">Light mode</button>
     <main class="container app-shell py-4 py-md-5">
       <section class="hero p-4 p-md-5 mb-4">
         <div class="position-relative" style="z-index:2;">
@@ -1024,6 +1128,48 @@
       const closeDetailsBtn = document.getElementById("closeDetailsBtn");
       const imageCache = new Map();
       let detailParallaxCleanup = null;
+
+      const THEME_STORAGE_KEY = "theme_preference";
+
+      function applyTheme(theme) {
+        const normalized = theme === "light" ? "light" : "dark";
+        document.documentElement.dataset.theme = normalized;
+        try {
+          window.localStorage.setItem(THEME_STORAGE_KEY, normalized);
+        } catch {
+          // ignore storage errors
+        }
+
+        const btn = document.getElementById("themeToggleBtn");
+        if (btn) btn.textContent = normalized === "dark" ? "Light mode" : "Dark mode";
+      }
+
+      function initTheme() {
+        let saved = null;
+        try {
+          saved = window.localStorage.getItem(THEME_STORAGE_KEY);
+        } catch {
+          // ignore
+        }
+
+        if (saved === "light" || saved === "dark") {
+          applyTheme(saved);
+          return;
+        }
+
+        const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        applyTheme(prefersLight ? "light" : "dark");
+      }
+
+      function toggleTheme() {
+        const current = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+        applyTheme(current === "light" ? "dark" : "light");
+      }
+
+      initTheme();
+      const themeToggleBtn = document.getElementById("themeToggleBtn");
+      if (themeToggleBtn) themeToggleBtn.addEventListener("click", toggleTheme);
+
       const KNOWN_PLANET_IMAGE_MAP = {
         mercury: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
         venus: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg",
