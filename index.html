@@ -33,6 +33,11 @@
 
       .app-shell {
         max-width: 1200px;
+        padding-inline: clamp(0.4rem, 2vw, 1rem);
+      }
+
+      #searchForm .col-md-2 {
+        align-items: stretch;
       }
 
       .hero {
@@ -167,19 +172,32 @@
 
       .planet-card {
         border: 1px solid var(--line);
-        border-radius: var(--radius-card);
+        border-radius: 20px;
         overflow: hidden;
         background:
-          linear-gradient(160deg, rgba(8, 32, 69, 0.76), rgba(5, 22, 50, 0.76)),
-          radial-gradient(circle at 30% 18%, rgba(83, 205, 255, 0.2), transparent 48%);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-        transition: transform 0.32s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+          linear-gradient(160deg, rgba(8, 32, 69, 0.82), rgba(5, 22, 50, 0.86)),
+          radial-gradient(circle at 30% 16%, rgba(95, 214, 255, 0.18), transparent 50%);
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+        transition: transform 0.32s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.28s ease;
         cursor: pointer;
+        transform-style: preserve-3d;
+        position: relative;
+      }
+
+      .planet-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: linear-gradient(130deg, rgba(154, 221, 255, 0.14), rgba(154, 221, 255, 0) 38%, rgba(116, 151, 255, 0.1) 72%, rgba(154, 221, 255, 0.18));
+        opacity: 0.85;
       }
 
       .planet-card:hover {
-        transform: translateY(-6px);
+        transform: perspective(980px) rotateX(6deg) rotateY(-6deg) translateY(-9px);
         border-color: rgba(96, 194, 255, 0.7);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.46), 0 0 0 1px rgba(103, 196, 255, 0.32), 0 0 32px rgba(65, 160, 255, 0.28);
       }
 
       .planet-card.is-activating {
@@ -193,10 +211,14 @@
       }
 
       .planet-art {
-        height: 160px;
+        height: 225px;
         width: 100%;
         border-bottom: 1px solid rgba(98, 165, 228, 0.26);
         position: relative;
+        display: grid;
+        place-items: center;
+        perspective: 700px;
+        overflow: hidden;
       }
 
       .planet-art::before {
@@ -204,12 +226,149 @@
         position: absolute;
         inset: 0;
         background:
-          radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.36), transparent 42%),
-          linear-gradient(120deg, transparent 42%, rgba(7, 19, 41, 0.32) 82%);
+          radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.18), transparent 48%),
+          radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.28), transparent 50%);
+      }
+
+      .planet-sphere {
+        width: 118px;
+        height: 118px;
+        border-radius: 50%;
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        --tilt-y: -18deg;
+        box-shadow:
+          inset -28px -22px 34px rgba(3, 12, 30, 0.64),
+          inset 18px 12px 28px rgba(255, 255, 255, 0.22),
+          0 12px 22px rgba(0, 0, 0, 0.45);
+        transform: translateZ(26px) rotateY(var(--tilt-y));
+      }
+
+      .planet-sphere::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.15) 24%, transparent 44%),
+          radial-gradient(circle at 70% 70%, transparent 40%, rgba(0, 0, 0, 0.42) 100%);
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .planet-sphere::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        box-shadow: inset 0 0 0 1px rgba(145, 215, 255, 0.18);
+        pointer-events: none;
+        z-index: 4;
+      }
+
+      .planet-texture {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background-size: 240% 100%;
+        background-position: 0% 50%;
+        background-repeat: repeat-x;
+        filter: saturate(1.15) contrast(1.08);
+        transform: scale(1.12);
+        z-index: 1;
+      }
+
+      .planet-texture::before {
+        content: "";
+        position: absolute;
+        inset: -8% -12%;
+        border-radius: 50%;
+        background: inherit;
+        opacity: 0.38;
+        mix-blend-mode: soft-light;
+        transform: scaleX(0.78) translateX(-7%);
+      }
+
+      .planet-bands {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        z-index: 2;
+        background:
+          conic-gradient(from 25deg at 52% 50%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 16%, rgba(0, 0, 0, 0.16) 35%, rgba(255, 255, 255, 0.06) 52%, rgba(0, 0, 0, 0.2) 72%, rgba(255, 255, 255, 0.12) 100%),
+          repeating-linear-gradient(165deg, rgba(255, 255, 255, 0.12) 0 7px, rgba(0, 0, 0, 0.08) 7px 14px);
+        opacity: 0.26;
+        transform: rotate(-12deg) scale(1.02);
+      }
+
+      .planet-terminator {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 26% 22%, rgba(255, 255, 255, 0.24), transparent 34%),
+          linear-gradient(110deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 32%, rgba(2, 8, 22, 0.62) 74%, rgba(0, 0, 0, 0.8) 100%);
+        mix-blend-mode: multiply;
+        z-index: 3;
+      }
+
+      .planet-atmosphere {
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        z-index: 4;
+        background: radial-gradient(circle at 34% 30%, rgba(176, 228, 255, 0.4), transparent 44%);
+        box-shadow:
+          inset 0 0 20px rgba(124, 206, 255, 0.24),
+          0 0 18px rgba(101, 191, 255, 0.24);
+        pointer-events: none;
       }
 
       .planet-name {
         color: #ffffff;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .planet-card-body {
+        padding: 1rem 1rem 1.06rem;
+      }
+
+      .planet-desc {
+        margin: 0.5rem 0 0.8rem;
+        color: #c4dbf6;
+        font-size: 0.84rem;
+        line-height: 1.45;
+        min-height: 2.4em;
+      }
+
+      .planet-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+
+      .planet-metric {
+        border: 1px solid rgba(117, 189, 255, 0.28);
+        background: rgba(9, 37, 76, 0.45);
+        border-radius: 10px;
+        padding: 0.48rem 0.5rem;
+      }
+
+      .planet-metric .k {
+        display: block;
+        color: #9ec7ee;
+        font-size: 0.66rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .planet-metric .v {
+        display: block;
+        margin-top: 0.2rem;
+        color: #f0f7ff;
+        font-size: 0.78rem;
       }
 
       .tag {
@@ -238,7 +397,7 @@
         place-items: center;
         background: rgba(2, 9, 22, 0.65);
         backdrop-filter: blur(6px);
-        padding: 1rem;
+        padding: clamp(0.6rem, 2vh, 1rem);
         z-index: 50;
       }
 
@@ -247,7 +406,8 @@
       }
 
       .details-panel {
-        width: min(680px, 100%);
+        width: min(760px, calc(100vw - 1.2rem));
+        max-height: calc(100vh - 1.2rem);
         border: 1px solid rgba(106, 188, 255, 0.48);
         border-radius: 22px;
         background:
@@ -255,6 +415,12 @@
           radial-gradient(circle at 100% 0%, rgba(53, 167, 255, 0.24), transparent 48%);
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
         animation: detailsAppear 320ms ease-out;
+        overflow: hidden;
+      }
+
+      #detailBody {
+        max-height: calc(100vh - 160px);
+        overflow: auto;
       }
 
       @keyframes detailsAppear {
@@ -264,6 +430,8 @@
 
       .details-header {
         border-bottom: 1px solid rgba(115, 193, 255, 0.24);
+        position: relative;
+        z-index: 4;
       }
 
       .close-btn {
@@ -277,21 +445,491 @@
         background: rgba(31, 96, 162, 0.66);
       }
 
+      .detail-cinematic {
+        position: relative;
+        min-height: clamp(380px, 48vh, 540px);
+        border-radius: 14px;
+        overflow: hidden;
+        isolation: isolate;
+        --mx: 0px;
+        --my: 0px;
+        --planet-core: radial-gradient(circle at 30% 30%, #d9f7ff 0%, #8ad8ff 42%, #2f75be 70%, #163f79 100%);
+        --planet-atmos-color: rgba(122, 203, 255, 0.32);
+        --nebula-a: rgba(146, 98, 255, 0.35);
+        --nebula-b: rgba(73, 170, 255, 0.3);
+        --nebula-c: rgba(41, 118, 255, 0.24);
+        --planet-ring-opacity: 0;
+      }
+
+      .detail-space-layer {
+        position: absolute;
+        inset: -6%;
+        pointer-events: none;
+      }
+
+      .detail-space-base {
+        background:
+          radial-gradient(circle at 18% 24%, var(--nebula-a), transparent 32%),
+          radial-gradient(circle at 82% 22%, var(--nebula-b), transparent 35%),
+          radial-gradient(circle at 60% 82%, var(--nebula-c), transparent 38%),
+          linear-gradient(180deg, rgba(3, 14, 36, 0.92), rgba(2, 9, 26, 0.9));
+        transform: translate(calc(var(--mx) * -0.08), calc(var(--my) * -0.08));
+      }
+
+      .detail-nebula {
+        background:
+          radial-gradient(circle at 65% 40%, rgba(107, 204, 255, 0.26), transparent 36%),
+          radial-gradient(circle at 34% 72%, rgba(106, 95, 255, 0.22), transparent 30%),
+          radial-gradient(circle at 80% 70%, rgba(255, 121, 238, 0.12), transparent 33%);
+        filter: blur(2px);
+        mix-blend-mode: screen;
+        transform: translate(calc(var(--mx) * -0.16), calc(var(--my) * -0.16));
+      }
+
+      .detail-stars {
+        background-image:
+          radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.86) 1px, transparent 2px),
+          radial-gradient(circle at 20% 70%, rgba(209, 237, 255, 0.75) 1px, transparent 2px),
+          radial-gradient(circle at 38% 34%, rgba(255, 255, 255, 0.85) 1px, transparent 2px),
+          radial-gradient(circle at 46% 78%, rgba(177, 225, 255, 0.66) 1px, transparent 2px),
+          radial-gradient(circle at 62% 18%, rgba(255, 255, 255, 0.82) 1px, transparent 2px),
+          radial-gradient(circle at 74% 60%, rgba(228, 245, 255, 0.72) 1px, transparent 2px),
+          radial-gradient(circle at 88% 30%, rgba(255, 255, 255, 0.8) 1px, transparent 2px);
+        background-size: 280px 280px;
+        opacity: 0.7;
+        animation: driftStars 32s linear infinite;
+        transform: translate(calc(var(--mx) * -0.2), calc(var(--my) * -0.2));
+      }
+
+      .detail-glow {
+        background: radial-gradient(circle at 64% 42%, rgba(88, 207, 255, 0.36), transparent 28%);
+        filter: blur(16px);
+      }
+
+      .detail-planet-wrap {
+        position: absolute;
+        right: clamp(18px, 4vw, 46px);
+        top: clamp(22px, 4vh, 58px);
+        width: clamp(120px, 17vw, 170px);
+        aspect-ratio: 1;
+        transform: translate(calc(var(--mx) * 0.25), calc(var(--my) * 0.25));
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .detail-planet {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          inset -34px -28px 48px rgba(1, 8, 28, 0.66),
+          inset 24px 14px 34px rgba(255, 255, 255, 0.24),
+          0 16px 44px rgba(0, 0, 0, 0.6),
+          0 0 24px rgba(98, 194, 255, 0.33);
+        transform: rotateZ(-9deg);
+        animation: floatPlanet 7.5s ease-in-out infinite;
+      }
+
+      .detail-planet::before {
+        content: "";
+        position: absolute;
+        inset: 20% -12%;
+        border-radius: 50%;
+        border: 2px solid rgba(202, 235, 255, 0.48);
+        box-shadow: 0 0 20px rgba(135, 198, 255, 0.34);
+        opacity: var(--planet-ring-opacity);
+        transform: rotate(-14deg);
+      }
+
+      .detail-planet-surface {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background-size: 170% 100%;
+        background-repeat: repeat-x;
+        background-position: center;
+        filter: saturate(1.14) contrast(1.12);
+        animation: rotatePlanetSurface 28s linear infinite;
+      }
+
+      .detail-planet-surface.is-photo {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        animation: none;
+        filter: saturate(1.08) contrast(1.05);
+      }
+
+      .detail-planet-shade {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.58), transparent 35%),
+          linear-gradient(118deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 42%, rgba(2, 7, 20, 0.36) 76%, rgba(0, 0, 0, 0.52) 100%);
+      }
+
+      .detail-planet-atmos {
+        position: absolute;
+        inset: -1px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 20px var(--planet-atmos-color), 0 0 24px var(--planet-atmos-color);
+      }
+
+      .detail-content-glass {
+        position: relative;
+        z-index: 3;
+        width: min(520px, 62%);
+        max-width: 100%;
+        margin-top: clamp(22px, 4vh, 40px);
+        margin-left: clamp(8px, 1.2vw, 16px);
+        border: 1px solid rgba(135, 208, 255, 0.34);
+        border-radius: 16px;
+        background: linear-gradient(160deg, rgba(6, 20, 48, 0.7), rgba(4, 18, 44, 0.56));
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+      }
+
+      .detail-content-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .detail-stat {
+        border: 1px solid rgba(120, 186, 255, 0.3);
+        border-radius: 12px;
+        background: rgba(7, 34, 74, 0.52);
+        padding: 0.72rem 0.78rem;
+      }
+
+      .detail-stat .k {
+        display: block;
+        font-size: 0.76rem;
+        letter-spacing: 0.04em;
+        color: #b5d9ff;
+      }
+
+      .detail-stat .v {
+        display: block;
+        font-size: 0.94rem;
+        margin-top: 0.24rem;
+        color: #eef6ff;
+        overflow-wrap: anywhere;
+      }
+
+      @keyframes rotatePlanetSurface {
+        from { background-position-x: 0%; }
+        to { background-position-x: 200%; }
+      }
+
+      @keyframes driftStars {
+        from { transform: translate(0, 0); }
+        to { transform: translate(-28px, -22px); }
+      }
+
+      @keyframes floatPlanet {
+        0%, 100% { transform: rotateZ(-9deg) translateY(0); }
+        50% { transform: rotateZ(-6deg) translateY(-8px); }
+      }
+
+      @media (max-width: 1200px) {
+        .details-panel {
+          width: min(700px, calc(100vw - 1rem));
+        }
+
+        .detail-content-glass {
+          width: min(560px, 68%);
+        }
+      }
+
       @media (max-width: 992px) {
+        .hero {
+          border-radius: 22px;
+        }
+
+        #results {
+          row-gap: 1rem;
+        }
+
+        .planet-card:hover {
+          transform: translateY(-4px);
+        }
+
         .ring-planet {
           opacity: 0.32;
           right: -130px;
           top: 120px;
         }
+
+        .details-panel {
+          width: min(640px, calc(100vw - 0.9rem));
+        }
+
+        #detailBody {
+          max-height: calc(100vh - 140px);
+        }
       }
 
       @media (max-width: 768px) {
+        body {
+          background-attachment: scroll;
+        }
+
+        .app-shell {
+          padding-inline: 0.35rem;
+        }
+
+        .hero {
+          border-radius: 18px;
+          padding: 1rem !important;
+        }
+
         .hero-title {
           max-width: none;
+          font-size: clamp(1.5rem, 7vw, 2rem);
+          margin-bottom: 0.7rem;
+        }
+
+        .hero-copy {
+          font-size: 0.92rem;
+          margin-bottom: 0.9rem !important;
+        }
+
+        .form-label {
+          font-size: 0.82rem;
+        }
+
+        .search-btn {
+          min-height: 42px;
+        }
+
+        #searchForm {
+          row-gap: 0.65rem;
         }
 
         .ring-planet {
           display: none;
+        }
+
+        .detail-cinematic {
+          min-height: 470px;
+        }
+
+        .detail-planet-wrap {
+          width: 124px;
+          right: 12px;
+          top: 20px;
+        }
+
+        .detail-content-glass {
+          width: 100%;
+          margin-top: 172px;
+          margin-left: 0;
+        }
+
+        .detail-content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .planet-art {
+          height: 200px;
+        }
+
+        .planet-metrics {
+          grid-template-columns: 1fr;
+        }
+
+        .details-panel {
+          width: calc(100vw - 0.7rem);
+          max-height: calc(100vh - 0.7rem);
+          border-radius: 16px;
+        }
+
+        .details-header {
+          padding: 0.75rem !important;
+        }
+
+        #detailName {
+          font-size: 1.05rem;
+        }
+
+        #detailType {
+          font-size: 0.82rem;
+        }
+
+        #detailBody {
+          padding: 0.72rem !important;
+          max-height: calc(100vh - 120px);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero {
+          padding: 0.85rem !important;
+        }
+
+        .hero-title {
+          font-size: 1.36rem;
+          line-height: 1.2;
+        }
+
+        .hero-copy {
+          font-size: 0.86rem;
+        }
+
+        .planet-card {
+          border-radius: 16px;
+        }
+
+        .planet-art {
+          height: 178px;
+        }
+
+        .planet-card-body {
+          padding: 0.8rem;
+        }
+
+        .planet-name {
+          font-size: 1rem;
+        }
+
+        .planet-desc {
+          font-size: 0.79rem;
+          min-height: 0;
+        }
+
+        .planet-metric .k {
+          font-size: 0.62rem;
+        }
+
+        .planet-metric .v {
+          font-size: 0.75rem;
+        }
+
+        .detail-cinematic {
+          min-height: 430px;
+        }
+
+        .detail-planet-wrap {
+          width: 106px;
+          right: 10px;
+          top: 16px;
+        }
+
+        .detail-content-glass {
+          margin-top: 150px;
+        }
+
+        .detail-stat {
+          padding: 0.58rem 0.62rem;
+        }
+
+        .detail-stat .k {
+          font-size: 0.7rem;
+        }
+
+        .detail-stat .v {
+          font-size: 0.84rem;
+        }
+      }
+
+      @media (max-width: 380px) {
+        .app-shell {
+          padding-inline: 0.2rem;
+        }
+
+        .hero {
+          border-radius: 14px;
+        }
+
+        .hero-title {
+          font-size: 1.22rem;
+        }
+
+        .hero-copy {
+          font-size: 0.8rem;
+        }
+
+        .form-control,
+        .form-select {
+          font-size: 0.86rem;
+          border-radius: 10px;
+        }
+
+        .search-btn {
+          min-height: 40px;
+          font-size: 0.9rem;
+        }
+
+        .planet-art {
+          height: 162px;
+        }
+
+        .planet-card-body {
+          padding: 0.68rem;
+        }
+
+        .planet-name {
+          font-size: 0.94rem;
+        }
+
+        .tag {
+          font-size: 0.7rem;
+        }
+
+        .details-panel {
+          width: calc(100vw - 0.45rem);
+          border-radius: 14px;
+        }
+
+        .close-btn {
+          padding: 0.28rem 0.45rem;
+          font-size: 0.78rem;
+        }
+
+        .detail-cinematic {
+          min-height: 390px;
+        }
+
+        .detail-planet-wrap {
+          width: 92px;
+          right: 8px;
+          top: 14px;
+        }
+
+        .detail-content-glass {
+          margin-top: 136px;
+        }
+      }
+
+      @media (max-height: 760px) {
+        .details-overlay {
+          align-items: start;
+          padding-top: 0.35rem;
+        }
+
+        .details-panel {
+          max-height: calc(100vh - 0.55rem);
+        }
+
+        #detailBody {
+          max-height: calc(100vh - 102px);
+        }
+
+        .detail-cinematic {
+          min-height: 350px;
+        }
+
+        .detail-planet-wrap {
+          width: clamp(88px, 14vw, 126px);
+          top: 10px;
+        }
+
+        .detail-content-glass {
+          margin-top: 122px;
         }
       }
     </style>
@@ -354,9 +992,13 @@
     </div>
 
     <script>
-      const API_URL = "https://api.le-systeme-solaire.net/rest/bodies";
+      const API_URLS = [
+        "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+top+300+pl_name,hostname,disc_year,discoverymethod,pl_bmasse,pl_rade,pl_orbper,pl_eqt+from+pscomppars&format=json"
+      ];
+      const WIKIPEDIA_SUMMARY_API = "https://en.wikipedia.org/api/rest_v1/page/summary/";
       const MAX_RESULTS = 120;
       const API_TIMEOUT_MS = 8000;
+      const IMAGE_FETCH_LIMIT = 18;
       const FALLBACK_BODIES = [
         { englishName: "Mercury", bodyType: "Planet", gravity: 3.7, meanRadius: 2439.7, mass: { massValue: 3.3011, massExponent: 23 }, density: 5.43, escape: 4250, avgTemp: 440, sideralRotation: 1407.6, sideralOrbit: 87.97, moons: [], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
         { englishName: "Venus", bodyType: "Planet", gravity: 8.87, meanRadius: 6051.8, mass: { massValue: 4.8675, massExponent: 24 }, density: 5.24, escape: 10360, avgTemp: 737, sideralRotation: -5832.5, sideralOrbit: 224.7, moons: [], discoveredBy: "Known to ancient astronomers", discoveryDate: "Antiquity" },
@@ -372,6 +1014,7 @@
       const searchForm = document.getElementById("searchForm");
       const nameQueryInput = document.getElementById("nameQuery");
       const bodyFilterInput = document.getElementById("bodyFilter");
+      const searchButton = searchForm.querySelector("button[type='submit']");
       const resultsEl = document.getElementById("results");
       const statusEl = document.getElementById("status");
       const detailsOverlay = document.getElementById("detailsOverlay");
@@ -379,6 +1022,30 @@
       const detailTypeEl = document.getElementById("detailType");
       const detailBodyEl = document.getElementById("detailBody");
       const closeDetailsBtn = document.getElementById("closeDetailsBtn");
+      const imageCache = new Map();
+      let detailParallaxCleanup = null;
+      const KNOWN_PLANET_IMAGE_MAP = {
+        mercury: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
+        venus: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg",
+        earth: "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg",
+        mars: "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg",
+        jupiter: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg",
+        saturn: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+        uranus: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg",
+        neptune: "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg",
+        pluto: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Nh-pluto-in-true-color_2x_JPEG-edit-frame.jpg"
+      };
+      const PLANET_VISUALS = {
+        mercury: { cardGradient: "radial-gradient(circle at 32% 30%, #f7e6c8 0%, #d0b58f 44%, #6f5e4a 76%, #3a3230 100%)", atmos: "rgba(202, 186, 152, 0.2)", nebula: ["rgba(158, 126, 101, 0.24)", "rgba(174, 145, 117, 0.2)", "rgba(101, 90, 80, 0.18)"], ring: 0 },
+        venus: { cardGradient: "radial-gradient(circle at 34% 28%, #fde8c4 0%, #e5bd74 42%, #b87e36 72%, #6a4728 100%)", atmos: "rgba(255, 203, 130, 0.28)", nebula: ["rgba(204, 127, 71, 0.24)", "rgba(194, 96, 54, 0.2)", "rgba(117, 69, 46, 0.2)"], ring: 0 },
+        earth: { cardGradient: "radial-gradient(circle at 32% 29%, #e9fbff 0%, #88d8ff 36%, #2f76be 66%, #143d79 100%)", atmos: "rgba(129, 214, 255, 0.34)", nebula: ["rgba(76, 131, 255, 0.27)", "rgba(68, 192, 255, 0.22)", "rgba(81, 94, 255, 0.2)"], ring: 0 },
+        mars: { cardGradient: "radial-gradient(circle at 30% 30%, #ffd0ad 0%, #d88a5f 40%, #a14f35 72%, #5a2f24 100%)", atmos: "rgba(255, 168, 121, 0.25)", nebula: ["rgba(207, 101, 61, 0.28)", "rgba(167, 66, 45, 0.22)", "rgba(92, 41, 38, 0.2)"], ring: 0 },
+        jupiter: { cardGradient: "radial-gradient(circle at 36% 24%, #ffe5cc 0%, #dab78f 36%, #b47f58 64%, #6f4a34 100%)", atmos: "rgba(255, 193, 142, 0.28)", nebula: ["rgba(198, 141, 90, 0.27)", "rgba(183, 108, 67, 0.22)", "rgba(111, 65, 49, 0.2)"], ring: 0 },
+        saturn: { cardGradient: "radial-gradient(circle at 34% 29%, #ffe9c3 0%, #dcc38e 38%, #b59252 67%, #6d5633 100%)", atmos: "rgba(255, 215, 133, 0.3)", nebula: ["rgba(187, 164, 94, 0.26)", "rgba(138, 112, 62, 0.22)", "rgba(90, 76, 42, 0.18)"], ring: 1 },
+        uranus: { cardGradient: "radial-gradient(circle at 34% 29%, #e8fdff 0%, #b9f0ff 40%, #6bbfd9 72%, #2e6d85 100%)", atmos: "rgba(150, 246, 255, 0.31)", nebula: ["rgba(92, 197, 217, 0.23)", "rgba(72, 149, 196, 0.2)", "rgba(58, 100, 152, 0.2)"], ring: 1 },
+        neptune: { cardGradient: "radial-gradient(circle at 34% 30%, #def0ff 0%, #8cc8ff 40%, #387ed6 68%, #1b3f85 100%)", atmos: "rgba(123, 182, 255, 0.32)", nebula: ["rgba(88, 114, 246, 0.28)", "rgba(56, 160, 255, 0.2)", "rgba(59, 68, 186, 0.2)"], ring: 0 },
+        pluto: { cardGradient: "radial-gradient(circle at 32% 28%, #f9e7d8 0%, #cbad95 42%, #7f6555 72%, #3f3532 100%)", atmos: "rgba(210, 192, 174, 0.2)", nebula: ["rgba(118, 94, 106, 0.25)", "rgba(105, 86, 161, 0.2)", "rgba(72, 57, 98, 0.2)"], ring: 0 }
+      };
 
       function setStatus(message) {
         statusEl.classList.remove("d-none");
@@ -388,6 +1055,12 @@
       function clearStatus() {
         statusEl.classList.add("d-none");
         statusEl.textContent = "";
+      }
+
+      function setLoadingState(isLoading) {
+        if (!searchButton) return;
+        searchButton.disabled = isLoading;
+        searchButton.textContent = isLoading ? "Searching..." : "Search";
       }
 
       function formatNumber(value, digits = 2) {
@@ -404,10 +1077,47 @@
 
       function renderDetailLine(label, value) {
         return `
-          <p class="mb-2 info-text">
-            <strong>${label}:</strong> ${value}
-          </p>
+          <article class="detail-stat">
+            <span class="k">${label}</span>
+            <span class="v">${value}</span>
+          </article>
         `;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll("\"", "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function attachDetailParallax() {
+        if (detailParallaxCleanup) detailParallaxCleanup();
+        const root = detailBodyEl.querySelector(".detail-cinematic");
+        if (!root) return;
+
+        const handleMove = (event) => {
+          const rect = root.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) - 0.5;
+          const y = ((event.clientY - rect.top) / rect.height) - 0.5;
+          root.style.setProperty("--mx", `${x * 18}px`);
+          root.style.setProperty("--my", `${y * 18}px`);
+        };
+
+        const handleLeave = () => {
+          root.style.setProperty("--mx", "0px");
+          root.style.setProperty("--my", "0px");
+        };
+
+        root.addEventListener("pointermove", handleMove, { passive: true });
+        root.addEventListener("pointerleave", handleLeave, { passive: true });
+        detailParallaxCleanup = () => {
+          root.removeEventListener("pointermove", handleMove);
+          root.removeEventListener("pointerleave", handleLeave);
+          detailParallaxCleanup = null;
+        };
       }
 
       function openDetails(body) {
@@ -430,13 +1140,157 @@
           ["Discovered By", body.discoveredBy || "Not listed"],
           ["Discovery Date", body.discoveryDate || "Unknown"]
         ];
-
-        detailBodyEl.innerHTML = values.map(([label, value]) => renderDetailLine(label, value)).join("");
+        const planetName = body.englishName || body.name || "planet";
+        const planetProfile = getPlanetVisualProfile(planetName);
+        const matchedImage = body.selectedTextureUrl || body.imageUrl || resolveKnownPlanetImage(planetName);
+        if (matchedImage) body.imageUrl = matchedImage;
+        const planetTextureSource = matchedImage || planetProfile.cardGradient;
+        const planetTexture = cssBackgroundImageValue(planetTextureSource);
+        const planetSurfaceClass = isPhotoUrl(planetTextureSource) ? "detail-planet-surface is-photo" : "detail-planet-surface";
+        detailBodyEl.innerHTML = `
+          <section class="detail-cinematic" style="${buildDetailThemeVars(planetProfile)}">
+            <div class="detail-space-layer detail-space-base"></div>
+            <div class="detail-space-layer detail-nebula"></div>
+            <div class="detail-space-layer detail-stars"></div>
+            <div class="detail-space-layer detail-glow"></div>
+            <div class="detail-planet-wrap">
+              <div class="detail-planet">
+                <div class="${planetSurfaceClass}" style="background-image:${planetTexture};"></div>
+                <div class="detail-planet-shade"></div>
+                <div class="detail-planet-atmos"></div>
+              </div>
+            </div>
+            <article class="detail-content-glass p-3 p-md-4">
+              <div class="detail-content-grid">
+                ${values.map(([label, value]) => renderDetailLine(escapeHtml(label), escapeHtml(value))).join("")}
+              </div>
+            </article>
+          </section>
+        `;
+        attachDetailParallax();
         detailsOverlay.classList.remove("d-none");
       }
 
       function closeDetails() {
+        if (detailParallaxCleanup) detailParallaxCleanup();
         detailsOverlay.classList.add("d-none");
+      }
+
+      function getPlanetVisualProfile(name) {
+        const key = String(name || "").toLowerCase().trim();
+        if (PLANET_VISUALS[key]) return PLANET_VISUALS[key];
+        for (const known of Object.keys(PLANET_VISUALS)) {
+          if (key.includes(known)) return PLANET_VISUALS[known];
+        }
+
+        return {
+          cardGradient: makeGradient(name),
+          atmos: "rgba(122, 203, 255, 0.28)",
+          nebula: ["rgba(121, 111, 248, 0.28)", "rgba(76, 162, 255, 0.24)", "rgba(67, 109, 222, 0.18)"],
+          ring: 0
+        };
+      }
+
+      function buildDetailThemeVars(profile) {
+        return [
+          `--planet-core:${profile.cardGradient}`,
+          `--planet-atmos-color:${profile.atmos}`,
+          `--nebula-a:${profile.nebula[0]}`,
+          `--nebula-b:${profile.nebula[1]}`,
+          `--nebula-c:${profile.nebula[2]}`,
+          `--planet-ring-opacity:${profile.ring ? "0.85" : "0"}`
+        ].join(";");
+      }
+
+      function normalizePlanetName(value) {
+        return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      }
+
+      function resolveKnownPlanetImage(planetName) {
+        const normalized = normalizePlanetName(planetName);
+        for (const [key, url] of Object.entries(KNOWN_PLANET_IMAGE_MAP)) {
+          if (normalized === key || normalized.includes(key)) return url;
+        }
+        return null;
+      }
+
+      function cssBackgroundImageValue(value) {
+        if (!value) return "";
+        if (value.startsWith("http://") || value.startsWith("https://")) {
+          return `url("${value.replaceAll("\"", "%22")}")`;
+        }
+        return value;
+      }
+
+      function isPhotoUrl(value) {
+        return typeof value === "string" && (value.startsWith("http://") || value.startsWith("https://"));
+      }
+
+      function normalizeExoplanet(rawPlanet) {
+        const earthMass = typeof rawPlanet.pl_bmasse === "number" ? rawPlanet.pl_bmasse : null;
+        const earthRadius = typeof rawPlanet.pl_rade === "number" ? rawPlanet.pl_rade : null;
+        const massKg = earthMass !== null ? earthMass * 5.9722e24 : null;
+        const meanRadiusKm = earthRadius !== null ? earthRadius * 6371 : null;
+
+        return {
+          englishName: rawPlanet.pl_name || "Unknown body",
+          bodyType: "Planet",
+          imageUrl: null,
+          gravity: null,
+          meanRadius: meanRadiusKm,
+          mass: massKg !== null ? { massValue: massKg / 1e24, massExponent: 24 } : null,
+          density: null,
+          escape: null,
+          avgTemp: typeof rawPlanet.pl_eqt === "number" ? rawPlanet.pl_eqt : null,
+          sideralRotation: null,
+          sideralOrbit: typeof rawPlanet.pl_orbper === "number" ? rawPlanet.pl_orbper : null,
+          moons: [],
+          aroundPlanet: rawPlanet.hostname ? { planet: rawPlanet.hostname } : null,
+          discoveredBy: rawPlanet.discoverymethod || "Not listed",
+          discoveryDate: rawPlanet.disc_year ? String(rawPlanet.disc_year) : "Unknown"
+        };
+      }
+
+      async function fetchPlanetImageUrl(planetName) {
+        if (!planetName) return null;
+        if (imageCache.has(planetName)) return imageCache.get(planetName);
+
+        const knownImage = resolveKnownPlanetImage(planetName);
+        if (knownImage) {
+          imageCache.set(planetName, knownImage);
+          return knownImage;
+        }
+
+        try {
+          const response = await fetch(`${WIKIPEDIA_SUMMARY_API}${encodeURIComponent(planetName)}`);
+          if (!response.ok) {
+            imageCache.set(planetName, null);
+            return null;
+          }
+
+          const payload = await response.json();
+          const imageUrl = payload && payload.thumbnail && payload.thumbnail.source ? payload.thumbnail.source : null;
+          imageCache.set(planetName, imageUrl);
+          return imageUrl;
+        } catch {
+          imageCache.set(planetName, null);
+          return null;
+        }
+      }
+
+      async function hydratePlanetImages(bodies) {
+        const items = bodies.slice(0, IMAGE_FETCH_LIMIT);
+        await Promise.all(items.map(async (body, index) => {
+          const name = body.englishName || body.name || "";
+          const imageUrl = body.imageUrl || resolveKnownPlanetImage(name) || await fetchPlanetImageUrl(name);
+          if (!imageUrl) return;
+          body.imageUrl = imageUrl;
+
+          const target = resultsEl.querySelector(`[data-texture-index="${index}"]`);
+          if (!target) return;
+          target.style.backgroundImage = `url('${imageUrl.replace(/'/g, "%27")}')`;
+          target.style.backgroundSize = "auto 100%";
+        }));
       }
 
       function makeGradient(seed = "") {
@@ -463,6 +1317,16 @@
           .slice(0, MAX_RESULTS);
       }
 
+      function mergeWithPriorityPlanets(liveBodies) {
+        const unique = new Map();
+        [...FALLBACK_BODIES, ...liveBodies].forEach((body) => {
+          const key = String(body.englishName || body.name || "").toLowerCase().trim();
+          if (!key) return;
+          if (!unique.has(key)) unique.set(key, body);
+        });
+        return Array.from(unique.values());
+      }
+
       function renderBodies(bodies) {
         if (!bodies.length) {
           resultsEl.innerHTML = `
@@ -482,17 +1346,33 @@
             const gravity = typeof body.gravity === "number" ? `${formatNumber(body.gravity)} m/s²` : "Unknown";
             const meanRadius = typeof body.meanRadius === "number" ? `${formatNumber(body.meanRadius)} km` : "Unknown";
             const moons = Array.isArray(body.moons) ? body.moons.length : 0;
+            const profile = getPlanetVisualProfile(englishName);
+            const tiltY = -10 - (index % 5) * 4;
+            const summaryText = `Explore ${englishName} in cinematic detail.`;
+            const knownImage = resolveKnownPlanetImage(englishName);
+            if (knownImage) body.imageUrl = knownImage;
+            const initialTexture = cssBackgroundImageValue(body.imageUrl || knownImage || profile.cardGradient);
 
             return `
               <div class="col-12 col-md-6 col-lg-4">
                 <article class="planet-card h-100" data-index="${index}">
-                  <div class="planet-art" style="background:${makeGradient(englishName)};"></div>
-                  <div class="p-3">
+                  <div class="planet-art" style="background:${profile.cardGradient};">
+                    <div class="planet-sphere" style="--tilt-y:${tiltY}deg;">
+                      <div class="planet-texture" data-texture-index="${index}" style="background-image:${initialTexture};"></div>
+                      <div class="planet-bands"></div>
+                      <div class="planet-terminator"></div>
+                      <div class="planet-atmosphere" style="box-shadow: inset 0 0 20px ${profile.atmos}, 0 0 24px ${profile.atmos};"></div>
+                    </div>
+                  </div>
+                  <div class="planet-card-body">
                     <h3 class="h5 planet-name mb-2">${englishName}</h3>
                     <p class="mb-2"><span class="badge tag">${bodyType}</span></p>
-                    <p class="small mb-2 info-text"><strong>Gravity:</strong> ${gravity}</p>
-                    <p class="small mb-2 info-text"><strong>Mean Radius:</strong> ${meanRadius}</p>
-                    <p class="small mb-0 info-text"><strong>Moons:</strong> ${moons}</p>
+                    <p class="planet-desc">${summaryText}</p>
+                    <div class="planet-metrics">
+                      <article class="planet-metric"><span class="k">Gravity</span><span class="v">${gravity}</span></article>
+                      <article class="planet-metric"><span class="k">Radius</span><span class="v">${meanRadius}</span></article>
+                      <article class="planet-metric"><span class="k">Moons</span><span class="v">${moons}</span></article>
+                    </div>
                   </div>
                 </article>
               </div>
@@ -506,6 +1386,15 @@
             const selectedBody = bodies[cardIndex];
             if (!selectedBody) return;
 
+            const textureEl = card.querySelector(`[data-texture-index="${cardIndex}"]`);
+            if (textureEl) {
+              const bg = textureEl.style.backgroundImage || "";
+              const matched = bg.match(/url\((['"]?)(.*?)\1\)/);
+              if (matched && matched[2]) {
+                selectedBody.selectedTextureUrl = matched[2];
+              }
+            }
+
             card.classList.remove("is-activating");
             void card.offsetWidth;
             card.classList.add("is-activating");
@@ -515,6 +1404,40 @@
             }, 260);
           });
         });
+
+        hydratePlanetImages(bodies);
+      }
+
+      async function requestBodiesFromApi() {
+        let lastError = null;
+        for (const url of API_URLS) {
+          const controller = new AbortController();
+          const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+          try {
+            const response = await fetch(url, {
+              signal: controller.signal
+            });
+            if (!response.ok) {
+              throw new Error(`API returned status ${response.status} for ${url}`);
+            }
+
+            const payload = await response.json();
+            const allBodies = Array.isArray(payload)
+              ? payload.map((planet) => normalizeExoplanet(planet))
+              : [];
+            if (allBodies.length) {
+              return allBodies;
+            }
+
+            throw new Error(`No bodies payload from ${url}`);
+          } catch (error) {
+            lastError = error;
+          } finally {
+            window.clearTimeout(timeoutId);
+          }
+        }
+
+        throw lastError || new Error("No planetary API endpoints available.");
       }
 
       async function fetchBodies() {
@@ -522,27 +1445,22 @@
         const type = bodyFilterInput.value.trim().toLowerCase();
 
         setStatus("Scanning planetary records...");
+        setLoadingState(true);
         resultsEl.innerHTML = "";
 
         try {
-          const controller = new AbortController();
-          const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
-          const response = await fetch(API_URL, { signal: controller.signal });
-          window.clearTimeout(timeoutId);
-          if (!response.ok) {
-            throw new Error(`API returned status ${response.status}`);
-          }
-
-          const payload = await response.json();
-          const allBodies = Array.isArray(payload.bodies) ? payload.bodies : [];
+          const liveBodies = await requestBodiesFromApi();
+          const allBodies = mergeWithPriorityPlanets(liveBodies);
           const filteredBodies = filterBodies(allBodies, query, type);
-          clearStatus();
+          setStatus("Live API connected. Featured planets prioritized for cinematic view.");
           renderBodies(filteredBodies);
         } catch (error) {
           const fallbackFiltered = filterBodies(FALLBACK_BODIES, query, type);
           setStatus("Live API unavailable. Showing offline planetary dataset.");
           renderBodies(fallbackFiltered);
           console.error("Live API failed, using fallback:", error);
+        } finally {
+          setLoadingState(false);
         }
       }
 
